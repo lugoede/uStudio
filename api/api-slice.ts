@@ -1,27 +1,28 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const productApi = createApi({
-  reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://asos2.p.rapidapi.com",
-    prepareHeaders: (headers) => {
-      headers.set(
-        "x-rapidapi-key",
-        "3a2d6f6293msh0814b616f9d52e1p10f093jsnab789579058a"
-      );
-      headers.set("x-rapidapi-host", "asos2.p.rapidapi.com");
-      return headers;
-    },
-  }),
+interface ImageData {
+  imageUrl: string;
+  link: string | null;
+}
 
+interface CategoryData {
+  category: string;
+  images: ImageData[];
+}
+
+interface ProductsResponse {
+  women: CategoryData;
+  men: CategoryData;
+}
+
+export const trendApi = createApi({
+  reducerPath: "trend",
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000" }),
   endpoints: (builder) => ({
-    getProducts: builder.query({
-      query: (params) => ({
-        url: "/products/v2/list",
-        params,
-      }),
+    getTrends: builder.query<ProductsResponse, void>({
+      query: () => "/fashiontrends",
     }),
   }),
 });
 
-export const { useGetProductsQuery } = productApi;
+export const { useGetTrendsQuery } = trendApi;
