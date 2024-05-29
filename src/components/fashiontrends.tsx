@@ -258,15 +258,16 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useGetTrendsQuery } from "../../api/api-slice";
 
 interface ImageData {
   imageUrl: string;
   text: string;
 }
 
-const FashionTrends: React.FC = () => {
+export default function FashionTrends() {
   const { category } = useParams<{ category: string }>();
-  const { data, isLoading, error } = useGetTrendssQuery();
+  const { data, isLoading, error } = useGetTrendsQuery();
   const [images, setImages] = useState<ImageData[]>([]);
 
   useEffect(() => {
@@ -300,9 +301,4 @@ const FashionTrends: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default FashionTrends;
-function useGetTrendssQuery(): { data: any; isLoading: any; error: any } {
-  throw new Error("Function not implemented.");
 }
