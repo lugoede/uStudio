@@ -4,11 +4,16 @@ import App from "./App.tsx";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "../api/store.ts";
+import theme from "./theme/theme.ts";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );

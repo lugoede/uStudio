@@ -148,17 +148,22 @@
 // }
 
 import { useNavigate } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import Header from "./header/header";
 
 export default function Landingpage() {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <h1>Fashion Trends</h1>
+    <>
+      <Header />
+      <Typography color="#0000FF" variant="h1" component={"h1"}>
+        Fashion Trends
+      </Typography>
+
       <Box>
-        <Button onClick={() => navigate("/trends/woman")}>Woman</Button>
-        <Button onClick={() => navigate("/trends/man")}>Man</Button>
+        {/* <Button onClick={() => navigate("/trends/woman")}>Woman</Button>
+        <Button onClick={() => navigate("/trends/man")}>Man</Button> */}
       </Box>
       {/* {isLoading && <CircularProgress />}
       {error && <p>Error</p>}
@@ -169,6 +174,6 @@ export default function Landingpage() {
           </Box>
         ))}
       </Box> */}
-    </div>
+    </>
   );
 }

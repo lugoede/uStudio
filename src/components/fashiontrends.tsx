@@ -259,45 +259,37 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetTrendsQuery } from "../../api/api-slice";
+import { Box } from "@mui/material";
 
-interface ImageData {
-  imageUrl: string;
-  text: string;
-}
+// interface ImageData {
+//   imageUrl: string;
+//   text: string;
+// }
 
 export default function FashionTrends() {
   const { category } = useParams<{ category: string }>();
-  const { data, isLoading, error } = useGetTrendsQuery();
-  const [images, setImages] = useState<ImageData[]>([]);
+  const { data: images, isLoading, error } = useGetTrendsQuery();
 
-  useEffect(() => {
-    if (data) {
-      if (category === "woman") {
-        setImages(data.women.images);
-      } else if (category === "man") {
-        setImages(data.men.images);
-      }
-    }
-  }, [data, category]);
-
+  console.log(images);
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>Error</div>;
 
   return (
     <div>
-      <h1>{category === "woman" ? "Women" : "Men"} Fashion Trends</h1>
+      <Box>
+        <h1>{category === "woman" ? "Women" : "Men"} Fashion Trends</h1>
+      </Box>
       <div>
-        {images.map((image, index) => (
-          <div key={index}>
-            <img
-              src={image.imageUrl}
-              alt={`${category} Fashion ${index}`}
-              width="100px"
-              height="100px"
-            />
-            <p>{image.text}</p>
-          </div>
-        ))}
+        {images &&
+          images.map((image, index) => {
+            return (
+              <div key={index}>
+                <a href={image.link}>
+                  <img src={image.image} width="100px" height="100px" />
+                </a>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

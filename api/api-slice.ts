@@ -1,25 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-interface ImageData {
-  imageUrl: string;
-  link: string | null;
-}
-
-interface CategoryData {
-  category: string;
-  images: ImageData[];
-}
-
 interface ProductsResponse {
-  women: CategoryData;
-  men: CategoryData;
+  title: string;
+  link: string;
+  image: string;
 }
 
 export const trendApi = createApi({
   reducerPath: "trend",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3331" }),
   endpoints: (builder) => ({
-    getTrends: builder.query<ProductsResponse, void>({
+    getTrends: builder.query<ProductsResponse[], void>({
       query: () => "/fashiontrends",
     }),
   }),

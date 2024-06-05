@@ -1,11 +1,13 @@
 import express from "express";
+import cors from "cors";
 // import axios from "axios";
 // import cheerio from "cheerio";
+
 import puppeteer from "puppeteer";
 
 const app = express();
 const PORT = 3331;
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 
 // app.get("/products", (req, res) => {
@@ -14,15 +16,16 @@ app.use(express.json());
 
 //------------------ PUPPETEER SCRAPING ---------------------------------------
 
-// interface Product {
-//   title: string;
-//   // imageUrl: string;
-// }
+interface Product {
+  title: string | null;
+  image: string | null;
+  link: string | null;
+}
 
 const scrapeZalandoWithPuppeteer = async () => {
   try {
     const browser = await puppeteer.launch({
-      headless: false, // Set to true for headless mode
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -33,23 +36,18 @@ const scrapeZalandoWithPuppeteer = async () => {
     });
     const page = await browser.newPage();
 
-    // Set User-Agent to mimic a regular browser
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
     );
 
-    // Request Interception aktivieren
     await page.setRequestInterception(true);
 
     page.on("request", (request) => {
       const requestUrl = request.url();
 
-      // Prüfen, ob die Anfrage zu einer anderen Domain geht als die Hauptseite
       if (requestUrl.startsWith("https://www.zalando.de")) {
-        // Erlaube First-Party-Anfragen
         request.continue();
       } else {
-        // Blockiere Third-Party-Anfragen
         request.abort();
       }
     });
@@ -59,15 +57,30 @@ const scrapeZalandoWithPuppeteer = async () => {
     });
 
     const products = await page.evaluate(() => {
-      const results = [] as string[];
-      document.querySelectorAll("#main-content").forEach((item) => {
-        const title = (
-          item.querySelector("h2") as HTMLElement
-        )?.innerText.trim();
-        if (title) {
-          results.push(title);
+      const items = Array.from(
+        document.querySelectorAll(
+          ".XLgdq7._0xLoFW.JgpeIw.r9BRio.be4rWJ.xlsKrm._4oK5GO.bhd0J_.AEfWtw._0xLoFW.be4rWJ.heWLCX > li"
+        )
+      );
+      const results: Product[] = [];
+
+      items.forEach((item) => {
+        const titleElement = item.querySelector("article");
+        const imageElement = item.querySelector("img");
+        const linkElement = item.querySelector("a");
+
+        const title = titleElement ? titleElement.innerText.trim() : null;
+        const link = linkElement ? linkElement.href : null;
+        const image = imageElement
+          ? imageElement.getAttribute("src") ||
+            imageElement.getAttribute("data-src")
+          : null;
+
+        if (title || image || link) {
+          results.push({ title, link, image });
         }
       });
+
       return results;
     });
 
@@ -262,6 +275,11 @@ app.get("/fashiontrends", async (req, res) => {
 //   const id = req.params.id;
 //   projects = projects.filter((project) => project.id !== id);
 // });
+
+app.get("/test-cors", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.send("CORS is working!");
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);

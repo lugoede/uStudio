@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import "./App.css";
 import Fashiontrends from "./components/fashiontrends";
 import Landingpage from "./components/landingpage";
