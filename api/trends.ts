@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { FashionItem } from "../src/components/fashiontrends";
 
 interface ProductsResponse {
   title: string;
@@ -13,7 +14,15 @@ export const trendApi = createApi({
     getTrends: builder.query<ProductsResponse[], void>({
       query: () => "/fashiontrends",
     }),
+
+    saveFavoriteTrend: builder.mutation<void, FashionItem>({
+      query: (body) => ({
+        url: "/profile",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useGetTrendsQuery } = trendApi;
+export const { useGetTrendsQuery, useSaveFavoriteTrendMutation } = trendApi;

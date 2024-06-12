@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { trendApi } from "./api-slice";
+import { trendApi } from "./trends";
 
 export const store = configureStore({
   reducer: {

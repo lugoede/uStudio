@@ -7,29 +7,24 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           backgroundColor: "#f5f5f5",
+          color: "#0000FF",
         },
       },
     },
   },
   palette: {
     primary: {
-      main: "#0954c0",
+      main: "#0000FF",
     },
-    // secondary: {
-    //   main: "#EBEBEB",
-    // },
-    text: {
-      primary: "#000000",
-    },
-    background: {
-      default: "#f2eded",
+    secondary: {
+      main: "#000000",
     },
   },
   typography: {
     fontFamily: "'Chivo Mono', monospace",
     h1: {
       fontWeight: 700,
-      lineHeight: 0.5,
+      lineHeight: 1,
       letterSpacing: "0.25em",
     },
     body1: {

@@ -150,20 +150,27 @@
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import Header from "./header/header";
+import { useGetTrendsQuery } from "../../api/trends";
 
 export default function Landingpage() {
   const navigate = useNavigate();
+  const { data: images, isLoading, error } = useGetTrendsQuery();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
 
   return (
     <>
       <Header />
-      <Typography color="#0000FF" variant="h1" component={"h1"}>
-        Fashion Trends
-      </Typography>
+      <Box marginTop={5}>
+        <Typography color="#0000FF" variant="h1" component={"h1"}>
+          Fashion Trends
+        </Typography>
+      </Box>
 
       <Box>
-        {/* <Button onClick={() => navigate("/trends/woman")}>Woman</Button>
-        <Button onClick={() => navigate("/trends/man")}>Man</Button> */}
+        <Button onClick={() => navigate("/trends/woman")}>Woman</Button>
+        <Button onClick={() => navigate("/trends/man")}>Man</Button>
       </Box>
       {/* {isLoading && <CircularProgress />}
       {error && <p>Error</p>}
@@ -174,6 +181,17 @@ export default function Landingpage() {
           </Box>
         ))}
       </Box> */}
+
+      <Box display="flex" flexWrap="wrap" gap={2} justifyContent="center">
+        {images &&
+          images.map((image, index) => {
+            return (
+              <a href={image.link} key={index}>
+                <img src={image.image} width="auto" />
+              </a>
+            );
+          })}
+      </Box>
     </>
   );
 }

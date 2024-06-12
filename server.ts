@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 // import axios from "axios";
 // import cheerio from "cheerio";
+import { v4 as uuidv4 } from "uuid";
 
 import puppeteer from "puppeteer";
 
@@ -116,65 +117,39 @@ app.get("/fashiontrends", async (req, res) => {
   }
 });
 
-// const scrapeZalandoWithPuppeteer = async (): Promise<Product[]> => {
-//   try {
-//     const browser = await puppeteer.launch({ headless: true });
-//     const page = await browser.newPage();
-//     await page.goto("https://www.zalando.de/modetrends/");
-//     const htmlContent = await page.content();
-//     console.log(htmlContent);
+export interface FashionItem {
+  gender: string | string[];
+  clothingPiece: string | string[];
+  style?: string | string[];
+  brandName: string | string[];
+  color: string | string[];
+  material: string | string[];
+  image: string;
+}
 
-//     const products = await page.evaluate(() => {
-//       const items = document.querySelectorAll(
-//         ".sDq_FX _2kjxJ6 FxZV-M HlZ_Tf DgFgr2"
-//       );
-//       const results: Product[] = [];
-//       items.forEach((item) => {
-//         const title = (
-//           item.querySelector("h2") as HTMLElement
-//         )?.innerText.trim();
-//         // const imageUrl = (
-//         //   item.querySelector("img") as HTMLImageElement
-//         // )?.getAttribute("src");
-//         if (title) {
-//           results.push({ title });
-//         }
-//       });
-//       return results;
-//     });
+export type TrendId = string;
 
-//     await browser.close();
+export interface TrendWithId extends FashionItem {
+  id: string;
+}
+const trends: TrendWithId[] = [];
 
-//     console.log(`Products found:`, products);
-
-//     return products;
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       throw new Error(`Error while scraping Zalando: ${error.message}`);
-//     } else {
-//       throw new Error("Unknown error occurred while scraping Zalando");
-//     }
-//   }
-// };
-
-// app.get("/fashiontrends", async (req, res) => {
-//   try {
-//     // const url = "https://www.zalando.de/modetrends/";
-//     const products = await scrapeZalandoWithPuppeteer();
-
-//     if (products.length > 0) {
-//       res.json(products);
-//     } else {
-//       res.status(404).send("No products found");
-//     }
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       res.status(500).send(`Error while scraping: ${error.message}`);
-//     } else {
-//       res.status(500).send("Unknown error occurred while scraping");
-//     }
-//   }
-// });
+app.post("/api/profile", (req, res) => {
+  const { gender, clothingPiece, style, brandName, color, material, image } =
+    req.body;
+  const trend = {
+    id,
+    gender,
+    clothingPiece,
+    style,
+    brandName,
+    color,
+    material,
+    image,
+  };
+  trends.push(trend);
+  res.json(trend);
+});
 
 //------------------ CHEERIO / AXIOS SCRAPING ---------------------------------------
 
@@ -255,14 +230,6 @@ app.get("/fashiontrends", async (req, res) => {
 //   projects.push(newProject);
 //   res.json(newProject);
 // });
-
-// app.put("/api/project/:id", (req, res) => {
-//   console.log("Hello world");
-//   const id = req.params.id;
-//   const { title, description, date } = req.body;
-//   const project = projects.find((project) => {
-//     return project.id === id;
-//   });
 
 //   if (project) {
 //     project.title = title;

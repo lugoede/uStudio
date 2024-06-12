@@ -1,296 +1,261 @@
-// import { useGetProductsQuery } from "../../api/api-slice";
-// import {
-//   Autocomplete,
-//   Button,
-//   OutlinedInput,
-//   TextField,
-//   colors,
-// } from "@mui/material";
-// import { useState, useEffect } from "react";
-// import { Controller, useForm } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  OutlinedInput,
+  Autocomplete,
+  TextField,
+  Checkbox,
+  FormGroup,
+} from "@mui/material";
 
-// export default function FashionTrends() {
-//   const { register, handleSubmit, reset, control, watch, setValue } = useForm();
-//   // const [searchTerm, setSearchTerm] = useState("");
-//   const [filteredProducts, setFilteredProducts] = useState([]);
+import { useSaveFavoriteTrendMutation } from "../../api/trends";
+import { fashionData } from "../assets/fashionData";
 
-//   const { data } = useGetProductsQuery({
-//     store: "US",
-//     offset: "0",
-//     categoryId: "4209",
-//     limit: "48",
-//     // country: "US",
-//     // sort: "freshness",
-//     // currency: "USD",
-//     // sizeSchema: "US",
-//     // lang: "en-US",
-//   });
-
-//   //   if (isLoading) return <div>Loading...</div>;
-//   //   if (error) return <div>Error: {error.message}</div>;
-
-//   // useEffect(() => {
-//   //   if (data) {
-//   //     setFilteredProducts(data.products);
-//   //   }
-//   // }, [data]);
-
-//   // const handleSearch = () => {
-//   //   if (data) {
-//   //     const filtered = data.products.filter(
-//   //       (product: any) =>
-//   //         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//   //         product.brandName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//   //         product.colour.toLowerCase().includes(searchTerm.toLowerCase())
-//   //     );
-//   //     setFilteredProducts(filtered);
-//   //   }
-//   // };
-
-//   const searchTerm = watch("search");
-//   const selectedColor = watch("color");
-
-//   useEffect(() => {
-//     if (data) {
-//       filterProducts(searchTerm, selectedColor);
-//     }
-//   }, [data, searchTerm, selectedColor]);
-
-//   const filterProducts = (searchTerm, color) => {
-//     if (!data) return;
-//     const filtered = data.products.filter(
-//       (product) =>
-//         (searchTerm
-//           ? product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//             product.brandName
-//               .toLowerCase()
-//               .includes(searchTerm.toLowerCase()) ||
-//             product.colour.toLowerCase().includes(searchTerm.toLowerCase())
-//           : true) &&
-//         (color ? product.colour.toLowerCase() === color.toLowerCase() : true)
-//     );
-//     setFilteredProducts(filtered);
-//   };
-
-//   const getUniqueValues = (array) => {
-//     return array.filter((value, index, self) => self.indexOf(value) === index);
-//   };
-
-//   const colors = data
-//     ? getUniqueValues(data.products.map((product) => product.colour))
-//     : [];
-
-//   const onSubmit = (data) => {
-//     filterProducts(data.search, data.color);
-//   };
-
-//   return (
-//     <div>
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <OutlinedInput
-//           {...register("search")}
-//           fullWidth
-//           value={searchTerm}
-//           onChange={(e) => {
-//             setValue("search", e.target.value);
-//             filterProducts(e.target.value, selectedColor);
-//           }}
-//           placeholder={"Search by name..."}
-//         ></OutlinedInput>
-//         <Controller
-//           name="color"
-//           control={control}
-//           render={({ field }) => (
-//             <Autocomplete
-//               {...field}
-//               options={colors}
-//               getOptionLabel={(option) => option}
-//               value={selectedColor}
-//               onChange={(newValue) => {
-//                 field.onChange(newValue);
-//                 filterProducts(searchTerm, newValue);
-//               }}
-//               renderInput={(params) => (
-//                 <TextField
-//                   {...params}
-//                   label="Filter by color"
-//                   variant="outlined"
-//                   margin="normal"
-//                   fullWidth
-//                 />
-//               )}
-//             />
-//           )}
-//         />
-//         {/* <Autocomplete
-//         options={brands}
-//         getOptionLabel={(option) => option}
-//         value={brand}
-//         onChange={(event, newValue) => setBrand(newValue)}
-//         renderInput={(params) => <TextField {...params} label="Filter by brand" variant="outlined" margin="normal" fullWidth />}
-//       /> */}
-//       </form>
-//       <h1>Fashion Trends</h1>
-//       <div>
-//         {filteredProducts?.map((product: any) => {
-//           return (
-//             <img
-//               key={product.id}
-//               src={`https://${product.imageUrl}`}
-//               width="100px"
-//               height="100px"
-//             />
-//           );
-//         })}
-//       </div>
-//     </div>
-//   );
-// }
-// import { useGetTrendsQuery } from "../../api/api-slice";
-// import {
-//   Autocomplete,
-//   Button,
-//   OutlinedInput,
-//   TextField,
-//   CircularProgress,
-//   Box,
-// } from "@mui/material";
-// import { useState, useEffect } from "react";
-// import { Controller, useForm } from "react-hook-form";
-
-// export default function Fashiontrends() {
-//   const { register, handleSubmit, control, watch, setValue } = useForm();
-//   const [filteredProducts, setFilteredProducts] = useState([]);
-//   const { data, isLoading, error } = useGetTrendsQuery();
-
-//   const searchTerm = watch("search");
-//   const selectedColor = watch("color");
-
-//   useEffect(() => {
-//     if (data) {
-//       filterProducts(searchTerm, selectedColor);
-//     }
-//   }, [data, searchTerm, selectedColor]);
-
-//   const filterProducts = (searchTerm, color) => {
-//     if (!data) return;
-//     const filtered = data.products.filter(
-//       (product) =>
-//         (searchTerm
-//           ? product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//             product.brandName
-//               .toLowerCase()
-//               .includes(searchTerm.toLowerCase()) ||
-//             product.colour.toLowerCase().includes(searchTerm.toLowerCase())
-//           : true) &&
-//         (color ? product.colour.toLowerCase() === color.toLowerCase() : true)
-//     );
-//     setFilteredProducts(filtered);
-//   };
-
-//   const getUniqueValues = (array) => {
-//     return array.filter((value, index) => array.indexOf(value) === index);
-//   };
-
-//   const colors = data
-//     ? getUniqueValues(data.products.map((product) => product.colour))
-//     : [];
-
-//   const onSubmit = (data) => {
-//     filterProducts(data.search, data.color);
-//   };
-
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <OutlinedInput
-//           {...register("search")}
-//           fullWidth
-//           value={searchTerm || ""}
-//           onChange={(e) => {
-//             setValue("search", e.target.value);
-//             filterProducts(e.target.value, selectedColor);
-//           }}
-//           placeholder={"Search by brand..."}
-//         />
-//         <Controller
-//           name="color"
-//           control={control}
-//           render={({ field }) => (
-//             <Autocomplete
-//               {...field}
-//               options={colors}
-//               getOptionLabel={(option) => option}
-//               value={field.value || null}
-//               onChange={(_, newValue) => {
-//                 field.onChange(newValue);
-//                 setValue("color", newValue);
-//                 filterProducts(searchTerm, newValue);
-//               }}
-//               renderInput={(params) => (
-//                 <TextField
-//                   {...params}
-//                   label="Filter by color"
-//                   variant="outlined"
-//                   fullWidth
-//                 />
-//               )}
-//             />
-//           )}
-//         />
-//       </form>
-//   return (
-//     <div>
-//       <h1>Fashion Trends</h1>
-
-{
-  /* {isLoading && <CircularProgress />}
-      {error && <p>Error</p>}
-      <Box>
-        {filteredProducts.map((product) => (
-          <Box key={product.id} mb={2}>
-            <img src={`https://${product.imageUrl}`} width="100" />
-          </Box>
-        ))}
-      </Box> */
+export interface FashionItem {
+  gender: string | string[];
+  clothingPiece: string | string[];
+  style?: string | string[];
+  brandName: string | string[];
+  color: string | string[];
+  material: string | string[];
+  image: string;
 }
-//     </div>
-//   );
-// }
-
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useGetTrendsQuery } from "../../api/api-slice";
-import { Box } from "@mui/material";
-
-// interface ImageData {
-//   imageUrl: string;
-//   text: string;
-// }
 
 export default function FashionTrends() {
-  const { category } = useParams<{ category: string }>();
-  const { data: images, isLoading, error } = useGetTrendsQuery();
+  const { control, watch, reset, handleSubmit } = useForm({
+    defaultValues: {
+      search: "",
+      color: [] as string[],
+      clothingPiece: [] as string[],
+      gender: "",
+      brandName: [] as string[],
+    },
+  });
 
-  console.log(images);
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
+  const [filteredProducts, setFilteredProducts] = useState<FashionItem[]>(
+    fashionData as FashionItem[]
+  );
+  const [saveTrend] = useSaveFavoriteTrendMutation();
+  const [selected, setSelected] = React.useState<string>();
+
+  const handleSelectImage = (id: string) => {
+    setSelected(id);
+  };
+
+  const search = watch("search");
+  const color = watch("color");
+  const clothingPiece = watch("clothingPiece");
+  const gender = watch("gender");
+  const brandName = watch("brandName");
+
+  const handleSave = (data: FashionItem) => {
+    console.log(data);
+    saveTrend(data);
+  };
+
+  useEffect(() => {
+    const filterProducts = () => {
+      const lowerCaseSearch = search.toLowerCase();
+      const filtered = fashionData.filter(
+        (item) =>
+          (!search ||
+            Object.values(item).some((value) => {
+              if (Array.isArray(value)) {
+                return value.some((v) =>
+                  v.toString().toLowerCase().includes(lowerCaseSearch)
+                );
+              }
+              return value.toString().toLowerCase().includes(lowerCaseSearch);
+            })) &&
+          (!color.length || color.some((c) => item.color.includes(c))) &&
+          (!clothingPiece.length ||
+            clothingPiece.some((cp) => item.clothingPiece.includes(cp))) &&
+          (!gender.length ||
+            gender.some((g) =>
+              Array.isArray(item.gender)
+                ? item.gender.includes(g)
+                : item.gender === g
+            )) &&
+          (!brandName.length ||
+            brandName.some((bn) => item.brandName.includes(bn)))
+      );
+      setFilteredProducts(filtered);
+    };
+
+    filterProducts();
+  }, [search, color, clothingPiece, gender, brandName]);
+
+  const clearFilters = () => {
+    reset({
+      search: "",
+      color: [],
+      clothingPiece: [],
+      gender: "",
+      brandName: [],
+    });
+    setFilteredProducts(fashionData);
+  };
 
   return (
-    <div>
-      <Box>
-        <h1>{category === "woman" ? "Women" : "Men"} Fashion Trends</h1>
-      </Box>
-      <div>
-        {images &&
-          images.map((image, index) => {
-            return (
-              <div key={index}>
-                <a href={image.link}>
-                  <img src={image.image} width="100px" height="100px" />
-                </a>
-              </div>
-            );
-          })}
-      </div>
-    </div>
+    <Box sx={{ p: 3 }}>
+      <form onSubmit={handleSubmit(handleSave)}>
+        <Controller
+          name="search"
+          control={control}
+          render={({ field }) => (
+            <OutlinedInput {...field} placeholder="Search" fullWidth />
+          )}
+        />
+        <Controller
+          name="color"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              multiple
+              options={[...new Set(fashionData.flatMap((item) => item.color))]}
+              getOptionLabel={(option) => option}
+              onChange={(_, value) => field.onChange(value)}
+              value={field.value || []}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Color"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
+          )}
+        />
+        <Controller
+          name="clothingPiece"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              multiple
+              options={[
+                ...new Set(fashionData.flatMap((item) => item.clothingPiece)),
+              ]}
+              getOptionLabel={(option) => option}
+              onChange={(_, value) => field.onChange(value)}
+              value={field.value || []}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Clothing Piece"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
+          )}
+        />
+        <Controller
+          name="gender"
+          control={control}
+          render={({ field }) => (
+            <FormGroup row>
+              {["male", "female"].map((genderOption) => (
+                <FormControlLabel
+                  key={genderOption}
+                  control={
+                    <Checkbox
+                      checked={field.value.includes(genderOption)}
+                      onChange={() => {
+                        const newGender = field.value.includes(genderOption)
+                          ? field.value.filter(
+                              (gender: string | string[]) =>
+                                gender !== genderOption
+                            )
+                          : [...field.value, genderOption];
+                        field.onChange(newGender);
+                      }}
+                    />
+                  }
+                  label={
+                    genderOption.charAt(0).toUpperCase() + genderOption.slice(1)
+                  }
+                />
+              ))}
+            </FormGroup>
+          )}
+        />
+        {/* <Controller
+          name="gender"
+          control={control}
+          render={({ field }) => (
+            <RadioGroup
+              value={field.value || ""}
+              onChange={(e) =>
+                field.onChange(
+                  field.value === e.target.value ? "" : e.target.value
+                )
+              }
+            >
+              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="female"
+                control={<Radio />}
+                label="Female"
+              />
+            </RadioGroup>
+          )}
+        /> */}
+        <Controller
+          name="brandName"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              multiple
+              options={[
+                ...new Set(fashionData.flatMap((item) => item.brandName)),
+              ]}
+              getOptionLabel={(option) => option}
+              onChange={(_, value) => field.onChange(value)}
+              value={field.value || []}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Brand"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
+          )}
+        />
+        <Button
+          onClick={clearFilters}
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+        >
+          Clear Filters
+        </Button>
+        <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2} mt={4}>
+          {filteredProducts.map((product, index) => (
+            <Box key={index} sx={{ mb: 2 }}>
+              <img
+                src={product.image}
+                alt={product.style ? product.style.toString() : "Fashion Item"}
+                width="200"
+              />
+              <Button
+                type="submit"
+                onClick={() => handleSelectImage(product.id)}
+              >
+                Save
+              </Button>
+            </Box>
+          ))}
+        </Box>
+      </form>
+    </Box>
   );
 }
